@@ -15,3 +15,6 @@ You will be redirected to an authorization page. To receive an `auth_token`, gra
 
 - Cards and Members: ``http://localhost:5000/task_members/<board_id>/<auth_token>``
 - Cards and Checklists: ``http://localhost:5000/task_checklists/<board_id>/<auth_token>``
+
+
+![Screenshot](https://raw.githubusercontent.com/glaubermagal/trelloso/master/screenshot.png)
