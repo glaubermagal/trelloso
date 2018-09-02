@@ -1,6 +1,3 @@
-This is a tool to show trello cards with all members who interacted with each card and all checklists for each card.
-
-
 ### Setting up and running
 
 - Create a virtual environment
