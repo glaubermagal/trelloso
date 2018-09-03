@@ -52,4 +52,4 @@ def get_cards(list_type, board_id, token):
                     pass
 
 
-    return render_template('tasks.html', cards=cards, list_type=list_type)
+    return render_template('cards.html', cards=cards, list_type=list_type)

@@ -101,6 +101,7 @@
             display: inline-block;
             vertical-align: middle;
             width: 40px;
+            height: 40px;
         }
         .comma {
             display: inline-block;
@@ -130,7 +131,7 @@
                     </span>
                     {{ card.name }}
                 </h2>
-                {% if list_type == 'task_checklists' %}
+                {% if list_type == 'card_checklists' %}
                     {% for checklist in card.checklists %}
                         <div class="checklists">
                             {% for item in checklist.checkItems %}
@@ -142,7 +143,7 @@
                             {% endfor %}
                         </div>
                     {% endfor %}
-                {% elif list_type == 'task_members' %}
+                {% elif list_type == 'card_members' %}
                     <div class="members">
                         {% if card.active_members|length > 0 %}
                             <ul class="memberlist">
