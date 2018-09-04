@@ -3,7 +3,7 @@
 - Create a virtual environment
 - Install all packages using `pip install -r requirements.txt`
 - `export TRELLO_API_KEY=...` You can generate your API_KEY [here](https://trello.com/app-key)
-- `export FLASK_APP=startup.py` To set up the start up script
+- `export FLASK_APP=app.py` To set up the start up script
 - `flask run`
 
 ### Routes

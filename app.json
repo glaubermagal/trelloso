@@ -1,0 +1,12 @@
+{
+  "name": "Trelloso",
+  "description": "Displays all cards of a board with all users who interacted with it",
+  "keywords": [
+    "flask",
+    "python",
+    "trelloso"
+  ],
+  "repository": "https://github.com/glaubermagal/trelloso",
+  "scripts": {},
+  "addons": []
+}
