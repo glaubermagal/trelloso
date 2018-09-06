@@ -15,20 +15,32 @@ def authorize():
 
 
 @app.route('/<list_type>/<board_id>/<token>')
-def get_cards(list_type, board_id, token):
-    trello_cards_url = "https://api.trello.com/1/boards/%s/cards/" % (board_id)
+def get_board_data(list_type, board_id, token):
+    trello_cards_url = "https://api.trello.com/1/boards/%s/cards/all" % board_id
+    trello_lists_url = "https://trello.com/1/boards/%s/lists" % board_id
 
     request_cards = requests.get(url=trello_cards_url, params={
         'key': TRELLO_API_KEY,
         'token': token,
-        'fields': 'name',
+        'fields': 'all',
         'members': 'true',
         'member_fields': 'fullName',
         'checklists': 'all',
         'actions': 'all',
     })
 
+    request_lists = requests.get(url=trello_lists_url, params={
+        'key': TRELLO_API_KEY,
+        'token': token,
+    })
+
     cards = request_cards.json()
+    lists = request_lists.json()
+
+    list_dict = {}
+    for list in lists:
+        list_dict[list['id']] = list['name']
+
     for index, card in enumerate(cards):
         active_members = []
         for action in card['actions']:
@@ -39,22 +51,12 @@ def get_cards(list_type, board_id, token):
 
         active_members_sorted = sorted(active_members, key=lambda k: k['fullName'])
         cards[index]['active_members'] = active_members_sorted
+        cards[index]['list_name'] = list_dict[card['idList']]
 
-        print card
-
-        # try:
-        #     cards[index]['list_name'] = card['actions'][0]['data']['list']['name']
-        # except KeyError:
-        #     try:
-        #         cards[index]['list_name'] = card['actions'][1]['data']['listAfter']['name']
-        #     except KeyError:
-        #         try:
-        #             cards[index]['list_name'] = card['actions'][1]['data']['list']['name']
-        #         except KeyError:
-        #             pass
-
-
-    return render_template('cards.html', cards=cards, list_type=list_type)
+    if list_type == "card_members_no_name":
+        return render_template('members_no_name.html', cards=cards, list_type=list_type)
+    else:
+        return render_template('cards.html', cards=cards, list_type=list_type)
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

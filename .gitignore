@@ -1,3 +1,4 @@
+.env
 .ideia/
 *.pyc
 .DS_Store
