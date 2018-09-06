@@ -1,8 +1,8 @@
 # coding: utf-8
 
 import os
-import requests
 from flask import Flask, render_template, redirect
+import requests
 
 app = Flask(__name__)
 TRELLO_API_KEY = os.environ.get("TRELLO_API_KEY")
@@ -40,16 +40,21 @@ def get_cards(list_type, board_id, token):
         active_members_sorted = sorted(active_members, key=lambda k: k['fullName'])
         cards[index]['active_members'] = active_members_sorted
 
-        try:
-            cards[index]['list_name'] = card['actions'][0]['data']['list']['name']
-        except KeyError:
-            try:
-                cards[index]['list_name'] = card['actions'][1]['data']['listAfter']['name']
-            except KeyError:
-                try:
-                    cards[index]['list_name'] = card['actions'][1]['data']['list']['name']
-                except KeyError:
-                    pass
+        print card
+
+        # try:
+        #     cards[index]['list_name'] = card['actions'][0]['data']['list']['name']
+        # except KeyError:
+        #     try:
+        #         cards[index]['list_name'] = card['actions'][1]['data']['listAfter']['name']
+        #     except KeyError:
+        #         try:
+        #             cards[index]['list_name'] = card['actions'][1]['data']['list']['name']
+        #         except KeyError:
+        #             pass
 
 
     return render_template('cards.html', cards=cards, list_type=list_type)
+
+if __name__ == '__main__':
+    app.run(debug=True,host='0.0.0.0')
