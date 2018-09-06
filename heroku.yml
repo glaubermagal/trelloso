@@ -1,9 +1,7 @@
+setup:
+  config: {}
 build:
-  docker:
-    web: Dockerfile
+  languages:
+    - python
 run:
-  web: bundle exec puma -C config/puma.rb
-  worker:
-    command:
-      - python app.py
-    image: web
+  web: 'gunicorn -b 0.0.0.0:$PORT web:app'
