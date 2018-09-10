@@ -10,7 +10,8 @@ TRELLO_API_KEY = os.environ.get("TRELLO_API_KEY")
 
 @app.route('/authorize')
 def authorize():
-    trello_auth_url = "https://trello.com/1/authorize?expiration=30days&name=D3Studio&scope=read&response_type=token&key=%s" % TRELLO_API_KEY
+    trello_auth_url = "https://trello.com/1/authorize?expiration=30days&name=Trelloso" \
+                      "&scope=read&response_type=token&key=%s" % TRELLO_API_KEY
     return redirect(trello_auth_url, code=302)
 
 
@@ -38,8 +39,8 @@ def get_board_data(list_type, board_id, token):
     lists = request_lists.json()
 
     list_dict = {}
-    for list in lists:
-        list_dict[list['id']] = list['name']
+    for lst in lists:
+        list_dict[lst['id']] = lst['name']
 
     for index, card in enumerate(cards):
         active_members = []
@@ -53,10 +54,15 @@ def get_board_data(list_type, board_id, token):
         cards[index]['active_members'] = active_members_sorted
         cards[index]['list_name'] = list_dict[card['idList']]
 
-    if list_type == "card_members_no_name":
-        return render_template('members_no_name.html', cards=cards, list_type=list_type)
+    if list_type == "members":
+        template = "members_with_name.html"
+    elif list_type == "members_no_name":
+        template = "members_without_name.html"
     else:
-        return render_template('cards.html', cards=cards, list_type=list_type)
+        template = "checklists.html"
+
+    return render_template(template, cards=cards, list_type=list_type)
+
 
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
