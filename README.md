@@ -15,7 +15,7 @@ You will be redirected to an authorization page. To receive the `auth_token`, gr
 
 ### Demos
 
-[Generate](https://trello.com/app-key) your `TRELLO_API_KEY` and use it down here:
+[Authorize](https://trelloso.herokuapp.com/authorize) this demo and use the generated `auth_token` down here:
 
 - Cards and its members with photo and name: ``https://trelloso.herokuapp.com/members/zU1bVDqo/<auth_token>``
 - Cards and its members with photo and without name: ``https://trelloso.herokuapp.com/members_no_name/zU1bVDqo/<auth_token>``
