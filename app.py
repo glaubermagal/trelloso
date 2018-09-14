@@ -17,7 +17,7 @@ def authorize():
 
 @app.route('/<list_type>/<board_id>/<token>')
 def get_board_data(list_type, board_id, token):
-    trello_cards_url = "https://api.trello.com/1/boards/%s/cards/all" % board_id
+    trello_cards_url = "https://api.trello.com/1/boards/%s/cards/open" % board_id
     trello_lists_url = "https://trello.com/1/boards/%s/lists" % board_id
 
     request_cards = requests.get(url=trello_cards_url, params={
