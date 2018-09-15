@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import os
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 import requests
 
 app = Flask(__name__)
@@ -15,8 +15,10 @@ def authorize():
     return redirect(trello_auth_url, code=302)
 
 
-@app.route('/<list_type>/<board_id>/<token>')
-def get_board_data(list_type, board_id, token):
+@app.route('/<board_id>/<token>')
+def get_board_data(board_id, token):
+    order_by = request.args.get('order_by', default='', type=str)
+    display = request.args.get('display', default='members,names,photos,checklists,labels', type=str)
     trello_cards_url = "https://api.trello.com/1/boards/%s/cards/open" % board_id
     trello_lists_url = "https://trello.com/1/boards/%s/lists" % board_id
 
@@ -44,6 +46,10 @@ def get_board_data(list_type, board_id, token):
 
     for index, card in enumerate(cards):
         active_members = []
+        labels = []
+        for label in card['labels']:
+            labels.append(label['name'])
+
         for action in card['actions']:
             if 'memberCreator' in action and action['memberCreator'] not in active_members:
                 active_members.append(action['memberCreator'])
@@ -53,15 +59,16 @@ def get_board_data(list_type, board_id, token):
         active_members_sorted = sorted(active_members, key=lambda k: k['fullName'])
         cards[index]['active_members'] = active_members_sorted
         cards[index]['list_name'] = list_dict[card['idList']]
+        cards[index]['labels_joined'] = ' / '.join(labels)
 
-    if list_type == "members":
-        template = "members_with_name.html"
-    elif list_type == "members_no_name":
-        template = "members_without_name.html"
-    else:
-        template = "checklists.html"
+    if order_by == 'labels':
+        cards = sorted(cards, key=lambda k: k['labels_joined'])
 
-    return render_template(template, cards=cards, list_type=list_type)
+    return render_template(
+        "cards.html",
+        cards=cards,
+        display=display
+    )
 
 
 if __name__ == '__main__':

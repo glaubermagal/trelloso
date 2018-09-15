@@ -76,6 +76,9 @@
             margin-bottom: 6px;
         }
 
+        .checklists {
+            margin-top: 10px;
+        }
         .checklist {
             list-style-type: square;
             list-style-position: inside;
@@ -116,6 +119,9 @@
             color: #fafafa;
         }
         .list_name {
+            color: #ff7f7f;
+        }
+        .label {
             display: inline-block;
             font-size: 0.625em;
             background: #524f4f;
@@ -127,6 +133,7 @@
             border-radius: 4px;
         }
     </style>
+    {% block extra_js %}{% endblock %}
 </head>
 <body>
     <div class="cards {{ list_type }}">
