@@ -19,26 +19,26 @@ def authorize():
 def get_board_data(board_id, token):
     order_by = request.args.get('order_by', default='', type=str)
     display = request.args.get('display', default='members,names,photos,checklists,labels', type=str)
-    trello_cards_url = "https://api.trello.com/1/boards/%s/cards/open" % board_id
+    trello_cards_url = "https://api.trello.com/1/boards/%s/cards" % board_id
     trello_lists_url = "https://trello.com/1/boards/%s/lists" % board_id
-
-    request_cards = requests.get(url=trello_cards_url, params={
-        'key': TRELLO_API_KEY,
-        'token': token,
-        'fields': 'all',
-        'members': 'true',
-        'member_fields': 'fullName',
-        'checklists': 'all',
-        'actions': 'all',
-    })
 
     request_lists = requests.get(url=trello_lists_url, params={
         'key': TRELLO_API_KEY,
         'token': token,
     })
 
-    cards = request_cards.json()
+    request_cards = requests.get(url=trello_cards_url, params={
+        'key': TRELLO_API_KEY,
+        'token': token,
+        'filter': 'visible',
+        'fields': 'name,idList,labels',
+        'member_fields': 'fullName',
+        'checklists': 'all' if 'checklists' in display else 'none',
+        'actions': 'all' if 'members' in display else 'none'
+    })
+
     lists = request_lists.json()
+    cards = request_cards.json()
 
     list_dict = {}
     for lst in lists:
@@ -50,16 +50,18 @@ def get_board_data(board_id, token):
         for label in card['labels']:
             labels.append(label['name'])
 
-        for action in card['actions']:
-            if 'memberCreator' in action and action['memberCreator'] not in active_members:
-                active_members.append(action['memberCreator'])
-            if 'member' in action and action['member'] not in active_members:
-                active_members.append(action['member'])
+        if 'members' in display:
+            for action in card['actions']:
+                if 'memberCreator' in action and action['memberCreator'] not in active_members:
+                    active_members.append(action['memberCreator'])
+                if 'member' in action and action['member'] not in active_members:
+                    active_members.append(action['member'])
 
-        active_members_sorted = sorted(active_members, key=lambda k: k['fullName'])
-        cards[index]['active_members'] = active_members_sorted
-        cards[index]['list_name'] = list_dict[card['idList']]
+            active_members_sorted = sorted(active_members, key=lambda k: k['fullName'])
+            cards[index]['active_members'] = active_members_sorted
+
         cards[index]['labels_joined'] = ' / '.join(labels)
+        cards[index]['list_name'] = list_dict[card['idList']]
 
     if order_by == 'labels':
         cards = sorted(cards, key=lambda k: k['labels_joined'])
