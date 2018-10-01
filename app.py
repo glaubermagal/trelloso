@@ -32,9 +32,10 @@ def get_board_data(board_id, token):
         'token': token,
         'filter': 'visible',
         'fields': 'name,idList,labels',
-        'member_fields': 'fullName',
+        'members': 'true',
+        'member_fields': 'username,avatarUrl,avatarHash,fullName,id,initials',
         'checklists': 'all' if 'checklists' in display else 'none',
-        'actions': 'all' if 'members' in display else 'none'
+        'actions': 'removeMemberFromCard' if 'members' in display else 'none'
     })
 
     lists = request_lists.json()
@@ -45,12 +46,13 @@ def get_board_data(board_id, token):
         list_dict[lst['id']] = lst['name']
 
     for index, card in enumerate(cards):
-        active_members = []
         labels = []
         for label in card['labels']:
             labels.append(label['name'])
 
         if 'members' in display:
+            active_members = card['members']
+
             for action in card['actions']:
                 if 'memberCreator' in action and action['memberCreator'] not in active_members:
                     active_members.append(action['memberCreator'])
