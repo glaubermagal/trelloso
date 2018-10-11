@@ -1,0 +1,8 @@
+FROM node:10.7
+
+COPY . /app
+WORKDIR /app
+
+RUN npm install webpack webpack-cli -g
+RUN npm install
+CMD webpack --watch --watch-polling -p
